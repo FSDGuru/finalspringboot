@@ -7,6 +7,7 @@ import com.bajaj.common.CustomeException;
 import com.bajaj.entities.UserEntity;
 import com.bajaj.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +18,12 @@ public class UserServiceImpl {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     public UserEntity saveUser(SignUpRequestBean signUpRequestBean) {
         UserEntity userEntity = mappingSignUpRequestToUserEntity(signUpRequestBean);
+        userEntity.setId(userRepository.findAll().size() + 1);
 
         return userRepository.save(userEntity);
 
@@ -37,7 +42,7 @@ public class UserServiceImpl {
 
         try {
             List<UserEntity> list = userRepository.findByEmailAndPassword(loginRequestBean.getLoginId(), loginRequestBean.getPassword());
-            return list.get(list.size()-1);
+            return list.get(list.size() - 1);
         } catch (Exception e) {
             ErrorBean errorBean = new ErrorBean();
             errorBean.setErrorCode("001");

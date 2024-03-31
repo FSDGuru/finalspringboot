@@ -14,4 +14,6 @@ public interface UserRepository extends MongoRepository<UserEntity,Long> {
 
 
     List<UserEntity> findByEmailAndPassword(String email,String password);
+
+
 }
